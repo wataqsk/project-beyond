@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb31dbc7e0d42147bd2df58ee0d702b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OrbitCamera: {fileID: 453439941}
+  OrbitCamera: {fileID: 0}
   CameraFollowPoint: {fileID: 964479981}
   Character: {fileID: 936359860}
 --- !u!1 &301669806
@@ -819,6 +819,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Motor: {fileID: 936359861}
+  MaxStableMoveSpeed: 10
+  StableMovementSharpness: 15
+  OrientationSharpness: 10
+  MaxAirMoveSpeed: 10
+  AirAccelerationSpeed: 5
+  Drag: 0.1
+  AllowJumpingWhenSliding: 0
+  JumpSpeed: 10
+  JumpPreGroundingGraceTime: 0
+  JumpPostGroundingGraceTime: 0
+  Gravity: {x: 0, y: -30, z: 0}
+  MeshRoot: {fileID: 0}
 --- !u!114 &936359861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1105,7 +1117,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2141676536}

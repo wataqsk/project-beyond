@@ -23,10 +23,8 @@ namespace KinematicCharacterController.Walkthrough.BasicMovement
         {
             Cursor.lockState = CursorLockMode.Locked;
 
-            // Tell camera to follow transform
             OrbitCamera.SetFollowTransform(CameraFollowPoint);
 
-            // Ignore the character's collider(s) for camera obstruction checks
             OrbitCamera.IgnoredColliders.Clear();
             OrbitCamera.IgnoredColliders.AddRange(Character.GetComponentsInChildren<Collider>());
         }
