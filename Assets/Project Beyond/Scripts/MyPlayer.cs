@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class MyPlayer : MonoBehaviour
+public class Player : MonoBehaviour
     {
-        public ExampleCharacterCamera OrbitCamera;
+        public MyCharacterCamera OrbitCamera;
         public Transform CameraFollowPoint;
         public MyCharacterController Character;
 

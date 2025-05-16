@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterCamera : MonoBehaviour
+public class MyCharacterCamera : MonoBehaviour
     {
         [Header("Framing")]
         public Camera Camera;
