@@ -672,6 +672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Motor: {fileID: 936359861}
+  MeshRoot: {fileID: 0}
   MaxStableMoveSpeed: 5
   StableMovementSharpness: 15
   OrientationSharpness: 10
@@ -683,7 +684,6 @@ MonoBehaviour:
   JumpPreGroundingGraceTime: 0
   JumpPostGroundingGraceTime: 0
   Gravity: {x: 0, y: -30, z: 0}
-  MeshRoot: {fileID: 0}
 --- !u!114 &936359861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -828,7 +828,7 @@ GameObject:
   - component: {fileID: 1061036527}
   - component: {fileID: 1061036526}
   m_Layer: 0
-  m_Name: OrbitCamera
+  m_Name: MainCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -846,7 +846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988a208a6a8cf7d4984ca9fd567454b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Camera: {fileID: 0}
+  Camera: {fileID: 1061036529}
   FollowPointFraming: {x: 0, y: 0}
   FollowingSharpness: 10000
   DefaultDistance: 6
