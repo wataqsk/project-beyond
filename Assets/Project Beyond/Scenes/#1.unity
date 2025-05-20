@@ -602,7 +602,7 @@ GameObject:
   m_Component:
   - component: {fileID: 962938163}
   m_Layer: 0
-  m_Name: PlayerModel
+  m_Name: PlayerChracter
   m_TagString: Folder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -981,7 +981,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4272998465738017018, guid: c423af26f0d895a4e9dc113c16b57285, type: 3}
       propertyPath: m_Name
-      value: MainCamera
+      value: Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749341943917192219, guid: c423af26f0d895a4e9dc113c16b57285, type: 3}
+      propertyPath: MaxDistance
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749341943917192219, guid: c423af26f0d895a4e9dc113c16b57285, type: 3}
+      propertyPath: RotationSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749341943917192219, guid: c423af26f0d895a4e9dc113c16b57285, type: 3}
+      propertyPath: DefaultDistance
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749341943917192219, guid: c423af26f0d895a4e9dc113c16b57285, type: 3}
+      propertyPath: MaxVerticalAngle
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749341943917192219, guid: c423af26f0d895a4e9dc113c16b57285, type: 3}
+      propertyPath: MinVerticalAngle
+      value: -80
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749341943917192219, guid: c423af26f0d895a4e9dc113c16b57285, type: 3}
+      propertyPath: DefaultVerticalAngle
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749341943917192219, guid: c423af26f0d895a4e9dc113c16b57285, type: 3}
+      propertyPath: RotateWithPhysicsMover
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1036,9 +1064,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3767375502688607860, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: CapsuleHeight
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3767375502688607860, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: CapsuleRadius
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3767375502688607860, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: CapsuleYOffset
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3767375502688607860, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: MinRequiredStepDepth
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3767375502688607860, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: MaxStableDistanceFromLedge
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3767375502688607860, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: GroundDetectionExtraDistance
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6485604393944653277, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 7900022191319079503, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: m_Height
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7900022191319079503, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: m_Radius
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7900022191319079503, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: m_Center.y
+      value: 0.9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
