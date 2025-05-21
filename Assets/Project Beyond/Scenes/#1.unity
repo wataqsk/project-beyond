@@ -602,7 +602,7 @@ GameObject:
   m_Component:
   - component: {fileID: 962938163}
   m_Layer: 0
-  m_Name: PlayerChracter
+  m_Name: PlayerCharacter
   m_TagString: Folder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1087,6 +1087,18 @@ PrefabInstance:
     - target: {fileID: 3767375502688607860, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
       propertyPath: GroundDetectionExtraDistance
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6105411682479635433, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: Gravity.y
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6105411682479635433, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: AllowDoubleJump
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6105411682479635433, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
+      propertyPath: AllowJumpingWhenSliding
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6485604393944653277, guid: dd86b6ca14b6fea4fbff48b3db7abba8, type: 3}
       propertyPath: m_Name
