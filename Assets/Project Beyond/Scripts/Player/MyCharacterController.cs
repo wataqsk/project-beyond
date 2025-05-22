@@ -7,6 +7,8 @@ public struct PlayerCharacterInputs
     public float MoveAxisRight;
     public Quaternion CameraRotation;
     public bool JumpDown;
+    public bool CrouchDown;
+    public bool CrouchUp;
 }
 
 public class MyCharacterController : MonoBehaviour, ICharacterController
@@ -32,7 +34,9 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
 
     [Header("Gravity")]
     public Vector3 Gravity = new Vector3(0, -30f, 0);
+    public bool OrientTowardsGravity = true;
 
+    private Collider[] _probedColliders = new Collider[8];
     private Vector3 _moveInputVector;
     private Vector3 _lookInputVector;
     private bool _jumpRequested = false;
@@ -44,19 +48,22 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
     private bool _canWallJump = false;
     private Vector3 _wallJumpNormal;
     private float deltaTime;
+    private Vector3 _internalVelocityAdd = Vector3.zero;
+    private bool _shouldBeCrouching = false;
+    private bool _isCrouching = false;
 
     private void Start() => Motor.CharacterController = this;
 
     public void SetInputs(ref PlayerCharacterInputs inputs)
     {
         Vector3 moveInputVector = Vector3.ClampMagnitude(new Vector3(inputs.MoveAxisRight, 0f, inputs.MoveAxisForward), 1f);
-        
+
         Vector3 cameraPlanarDirection = Vector3.ProjectOnPlane(inputs.CameraRotation * Vector3.forward, Motor.CharacterUp).normalized;
         if (cameraPlanarDirection.sqrMagnitude == 0f)
             cameraPlanarDirection = Vector3.ProjectOnPlane(inputs.CameraRotation * Vector3.up, Motor.CharacterUp).normalized;
-        
+
         Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Motor.CharacterUp);
-        
+
         _moveInputVector = cameraPlanarRotation * moveInputVector;
         _lookInputVector = cameraPlanarDirection;
 
@@ -65,14 +72,34 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
             _timeSinceJumpRequested = 0f;
             _jumpRequested = true;
         }
+
+        if (inputs.CrouchDown)
+        {
+            _shouldBeCrouching = true;
+            if (!_isCrouching)
+            {
+                _isCrouching = true;
+                Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
+                MeshRoot.localScale = new Vector3(1f, 0.5f, 1f);
+            }
+        }
+        else if (inputs.CrouchUp)
+        {
+            _shouldBeCrouching = false;
+        }
     }
 
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
         if (_lookInputVector == Vector3.zero || OrientationSharpness <= 0f) return;
-        
+
         Vector3 smoothedLookInputDirection = Vector3.Slerp(Motor.CharacterForward, _lookInputVector, 1 - Mathf.Exp(-OrientationSharpness * deltaTime)).normalized;
         currentRotation = Quaternion.LookRotation(smoothedLookInputDirection, Motor.CharacterUp);
+        
+        if (OrientTowardsGravity)
+        {
+            currentRotation = Quaternion.FromToRotation((currentRotation * Vector3.up), -Gravity) * currentRotation;
+        }
     }
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
@@ -80,11 +107,11 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
         if (Motor.GroundingStatus.IsStableOnGround)
         {
             currentVelocity = Motor.GetDirectionTangentToSurface(currentVelocity, Motor.GroundingStatus.GroundNormal) * currentVelocity.magnitude;
-            
+
             Vector3 inputRight = Vector3.Cross(_moveInputVector, Motor.CharacterUp);
             Vector3 reorientedInput = Vector3.Cross(Motor.GroundingStatus.GroundNormal, inputRight).normalized * _moveInputVector.magnitude;
             Vector3 targetMovementVelocity = reorientedInput * MaxStableMoveSpeed;
-            
+
             currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1 - Mathf.Exp(-StableMovementSharpness * deltaTime));
         }
         else
@@ -108,6 +135,12 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
         }
 
         HandleJumping(ref currentVelocity);
+        
+        if (_internalVelocityAdd.sqrMagnitude > 0f)
+        {
+            currentVelocity += _internalVelocityAdd;
+            _internalVelocityAdd = Vector3.zero;
+        }
     }
 
     private void HandleJumping(ref Vector3 currentVelocity)
@@ -152,7 +185,7 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
             _jumpRequested = false;
 
         bool isGrounded = AllowJumpingWhenSliding ? Motor.GroundingStatus.FoundAnyGround : Motor.GroundingStatus.IsStableOnGround;
-        
+
         if (isGrounded)
         {
             if (!_jumpedThisFrame)
@@ -165,6 +198,23 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
         else
         {
             _timeSinceLastAbleToJump += deltaTime;
+        }
+
+        if (_isCrouching && !_shouldBeCrouching)
+        {
+            Motor.SetCapsuleDimensions(0.5f, 2f, 1f);
+            if (Motor.CharacterCollisionsOverlap(
+                    Motor.TransientPosition,
+                    Motor.TransientRotation,
+                    _probedColliders) > 0)
+            {
+                Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
+            }
+            else
+            {
+                MeshRoot.localScale = new Vector3(1f, 1f, 1f);
+                _isCrouching = false;
+            }
         }
     }
 
@@ -188,7 +238,7 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
     public void BeforeCharacterUpdate(float deltaTime) { }
     public bool IsColliderValidForCollisions(Collider coll) => true;
     public void OnGroundHit(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, ref HitStabilityReport hitStabilityReport) { }
-    public void AddVelocity(Vector3 velocity) { }
+    public void AddVelocity(Vector3 velocity) => _internalVelocityAdd += velocity;
     public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, Vector3 atCharacterPosition, Quaternion atCharacterRotation, ref HitStabilityReport hitStabilityReport) { }
     public void OnDiscreteCollisionDetected(Collider hitCollider) { }
 }

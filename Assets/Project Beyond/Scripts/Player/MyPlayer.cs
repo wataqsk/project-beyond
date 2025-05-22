@@ -44,9 +44,17 @@ public class MyPlayer : MonoBehaviour
             MoveAxisForward = Input.GetAxisRaw("Vertical"),
             MoveAxisRight = Input.GetAxisRaw("Horizontal"),
             CameraRotation = OrbitCamera.Transform.rotation,
-            JumpDown = Input.GetKeyDown(KeyCode.Space)
+            JumpDown = Input.GetKeyDown(KeyCode.Space),
+            CrouchDown = Input.GetKeyDown(KeyCode.LeftControl),
+            CrouchUp = Input.GetKeyUp(KeyCode.LeftControl),
         };
 
         Character.SetInputs(ref inputs);
+        
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            Character.Motor.ForceUnground(0.1f);
+            Character.AddVelocity(Vector3.one * 10f);
+        }
     }
 }
