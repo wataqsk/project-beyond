@@ -1,5 +1,6 @@
 using UnityEngine;
 using KinematicCharacterController;
+using System.Collections;
 
 public struct PlayerCharacterInputs
 {
@@ -32,10 +33,21 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
     public float JumpPreGroundingGraceTime = 0f;
     public float JumpPostGroundingGraceTime = 0f;
 
+[Header("Dash")]
+[Tooltip("Velocidade do dash")]
+public float dashSpeed = 30f;
+[Tooltip("Duração do dash em segundos")]
+public float dashDuration = 0.15f;
+[Tooltip("Tempo de espera entre dashes")]
+public float dashCooldown = 1f;
+
+private bool _isDashing = false;
+private float _dashCooldownTimer = 0f;
+    private Vector3 _dashDirection;
+
     [Header("Gravity")]
     public Vector3 Gravity = new Vector3(0, -30f, 0);
     public bool OrientTowardsGravity = true;
-
     private Collider[] _probedColliders = new Collider[8];
     private Vector3 _moveInputVector;
     private Vector3 _lookInputVector;
@@ -104,6 +116,7 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
+
         if (Motor.GroundingStatus.IsStableOnGround)
         {
             currentVelocity = Motor.GetDirectionTangentToSurface(currentVelocity, Motor.GroundingStatus.GroundNormal) * currentVelocity.magnitude;
@@ -135,12 +148,20 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
         }
 
         HandleJumping(ref currentVelocity);
-        
+
         if (_internalVelocityAdd.sqrMagnitude > 0f)
         {
             currentVelocity += _internalVelocityAdd;
             _internalVelocityAdd = Vector3.zero;
         }
+        
+         // Atualiza cooldown
+        _dashCooldownTimer = Mathf.Max(0, _dashCooldownTimer - deltaTime);
+
+        // Se estiver dashando, ignora outros movimentos
+        if (_isDashing) return;
+
+
     }
 
     private void HandleJumping(ref Vector3 currentVelocity)
@@ -178,6 +199,37 @@ public class MyCharacterController : MonoBehaviour, ICharacterController
         _jumpRequested = false;
         _jumpedThisFrame = true;
     }
+
+public void RequestDash(Vector3 direction)
+{
+    if (_dashCooldownTimer <= 0f && !_isDashing && direction != Vector3.zero)
+    {
+        _isDashing = true;
+        _dashDirection = direction.normalized;
+        _dashCooldownTimer = dashCooldown;
+        
+        // Opcional: força "desgrudar" do chão durante o dash
+        Motor.ForceUnground(0.1f);
+        
+        // Inicia corrotina do dash
+        StartCoroutine(PerformDash());
+    }
+}
+
+private IEnumerator PerformDash()
+{
+    float startTime = Time.time;
+    
+    while (Time.time < startTime + dashDuration)
+    {
+        // Move o personagem na direção do dash
+        Motor.BaseVelocity = _dashDirection * dashSpeed;
+        yield return null;
+    }
+    
+    _isDashing = false;
+    Motor.BaseVelocity = Vector3.zero;
+}
 
     public void AfterCharacterUpdate(float deltaTime)
     {

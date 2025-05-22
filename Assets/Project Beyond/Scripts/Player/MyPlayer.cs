@@ -38,23 +38,37 @@ public class MyPlayer : MonoBehaviour
     }
 
     private void HandleCharacterInput()
+{
+    var inputs = new PlayerCharacterInputs
     {
-        var inputs = new PlayerCharacterInputs
-        {
-            MoveAxisForward = Input.GetAxisRaw("Vertical"),
-            MoveAxisRight = Input.GetAxisRaw("Horizontal"),
-            CameraRotation = OrbitCamera.Transform.rotation,
-            JumpDown = Input.GetKeyDown(KeyCode.Space),
-            CrouchDown = Input.GetKeyDown(KeyCode.LeftControl),
-            CrouchUp = Input.GetKeyUp(KeyCode.LeftControl),
-        };
+        MoveAxisForward = Input.GetAxisRaw("Vertical"),
+        MoveAxisRight = Input.GetAxisRaw("Horizontal"),
+        CameraRotation = OrbitCamera.Transform.rotation,
+        JumpDown = Input.GetKeyDown(KeyCode.Space),
+        CrouchDown = Input.GetKeyDown(KeyCode.LeftControl),
+        CrouchUp = Input.GetKeyUp(KeyCode.LeftControl),
+    };
 
-        Character.SetInputs(ref inputs);
+    Character.SetInputs(ref inputs);
+    
+    // Dash com Shift - prioriza direção do movimento ou da câmera
+    if (Input.GetKeyDown(KeyCode.LeftShift))
+    {
+        Vector3 dashDirection = Vector3.zero;
         
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        // Usa direção do movimento se estiver se movendo
+        if (inputs.MoveAxisForward != 0 || inputs.MoveAxisRight != 0)
         {
-            Character.Motor.ForceUnground(0.1f);
-            Character.AddVelocity(Vector3.one * 10f);
+            dashDirection = OrbitCamera.Transform.forward * inputs.MoveAxisForward 
+                          + OrbitCamera.Transform.right * inputs.MoveAxisRight;
         }
+        else
+        {
+            // Se não estiver se movendo, usa direção da câmera
+            dashDirection = OrbitCamera.Transform.forward;
+        }
+        
+        Character.RequestDash(dashDirection);
     }
+}
 }

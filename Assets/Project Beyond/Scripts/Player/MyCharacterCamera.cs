@@ -86,13 +86,13 @@ public class MyCharacterCamera : MonoBehaviour
         Quaternion rotationFromInput = Quaternion.Euler(FollowTransform.up * (rotationInput.x * RotationSpeed));
         PlanarDirection = rotationFromInput * PlanarDirection;
         PlanarDirection = Vector3.Cross(FollowTransform.up, Vector3.Cross(PlanarDirection, FollowTransform.up));
-        
+
         _targetVerticalAngle -= rotationInput.y * RotationSpeed;
         _targetVerticalAngle = Mathf.Clamp(_targetVerticalAngle, MinVerticalAngle, MaxVerticalAngle);
 
         Quaternion planarRot = Quaternion.LookRotation(PlanarDirection, FollowTransform.up);
         Quaternion verticalRot = Quaternion.Euler(_targetVerticalAngle, 0, 0);
-        Quaternion targetRotation = Quaternion.Slerp(Transform.rotation, planarRot * verticalRot, 
+        Quaternion targetRotation = Quaternion.Slerp(Transform.rotation, planarRot * verticalRot,
             1f - Mathf.Exp(-RotationSharpness * Time.deltaTime));
 
         Transform.rotation = targetRotation;
@@ -104,21 +104,21 @@ public class MyCharacterCamera : MonoBehaviour
         {
             TargetDistance = _currentDistance;
         }
-        
+
         TargetDistance += zoomInput * DistanceMovementSpeed;
         TargetDistance = Mathf.Clamp(TargetDistance, MinDistance, MaxDistance);
     }
 
     private void UpdateFollowPosition(float deltaTime)
     {
-        _currentFollowPosition = Vector3.Lerp(_currentFollowPosition, FollowTransform.position, 
+        _currentFollowPosition = Vector3.Lerp(_currentFollowPosition, FollowTransform.position,
             1f - Mathf.Exp(-FollowingSharpness * deltaTime));
     }
 
     private void HandleObstructions(float deltaTime)
     {
         RaycastHit closestHit = new RaycastHit { distance = Mathf.Infinity };
-        _obstructionCount = Physics.SphereCastNonAlloc(_currentFollowPosition, ObstructionCheckRadius, 
+        _obstructionCount = Physics.SphereCastNonAlloc(_currentFollowPosition, ObstructionCheckRadius,
             -Transform.forward, _obstructions, TargetDistance, ObstructionLayers, QueryTriggerInteraction.Ignore);
 
         for (int i = 0; i < _obstructionCount; i++)
@@ -133,13 +133,13 @@ public class MyCharacterCamera : MonoBehaviour
         if (closestHit.distance < Mathf.Infinity)
         {
             _distanceIsObstructed = true;
-            _currentDistance = Mathf.Lerp(_currentDistance, closestHit.distance, 
+            _currentDistance = Mathf.Lerp(_currentDistance, closestHit.distance,
                 1 - Mathf.Exp(-ObstructionSharpness * deltaTime));
         }
         else
         {
             _distanceIsObstructed = false;
-            _currentDistance = Mathf.Lerp(_currentDistance, TargetDistance, 
+            _currentDistance = Mathf.Lerp(_currentDistance, TargetDistance,
                 1 - Mathf.Exp(-DistanceMovementSharpness * deltaTime));
         }
     }
